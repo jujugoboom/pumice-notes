@@ -1,6 +1,12 @@
+# Pumice Notes
+
+Open source markdown notes app. Uses [Codemirror 6](https://codemirror.net/6/) for editor functionality.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+Relative path [link](other.md)
 
 ## Available Scripts
 

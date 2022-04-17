@@ -1,8 +1,25 @@
 {
-  "name": "electron-notes-react",
+  "name": "pumice-notes",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@codemirror/autocomplete": "^0.19.0",
+    "@codemirror/closebrackets": "^0.19.0",
+    "@codemirror/commands": "^0.19.0",
+    "@codemirror/comment": "^0.19.0",
+    "@codemirror/fold": "^0.19.0",
+    "@codemirror/gutter": "^0.19.0",
+    "@codemirror/highlight": "^0.19.0",
+    "@codemirror/history": "^0.19.0",
+    "@codemirror/lang-markdown": "^0.19.6",
+    "@codemirror/language": "^0.19.0",
+    "@codemirror/lint": "^0.19.0",
+    "@codemirror/matchbrackets": "^0.19.0",
+    "@codemirror/rectangular-selection": "^0.19.2",
+    "@codemirror/search": "^0.19.0",
+    "@codemirror/state": "^0.19.9",
+    "@codemirror/text": "^0.19.6",
+    "@codemirror/view": "^0.19.48",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.0.1",
     "@testing-library/user-event": "^13.5.0",
@@ -11,11 +28,14 @@
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
+  "main": "public/electron.js",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "dev": "concurrently -k \"BROWSER=none npm start\" \"npm:electron\"",
+    "electron": "wait-on tcp:3000 && electron ."
   },
   "eslintConfig": {
     "extends": [
@@ -34,5 +54,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "concurrently": "^7.1.0",
+    "electron": "^18.0.4",
+    "electron-is-dev": "^2.0.0",
+    "wait-on": "^6.0.1"
   }
 }

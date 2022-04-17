@@ -1,0 +1,17 @@
+.editor {
+    height: 100vh;
+    width: 100%;
+    text-align: left;
+    flex: 2;
+    overflow-x: auto;
+}
+
+.cm-editor { height: 100% }
+.cm-scroller { overflow: auto }
+.cm-editor .cm-link {
+    text-decoration: underline;
+}
+.cm-editor .cm-url {
+    color: blue;
+    text-decoration: underline;
+}
