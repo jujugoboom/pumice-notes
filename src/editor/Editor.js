@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import {keymap, highlightSpecialChars, drawSelection, highlightActiveLine, dropCursor, EditorView} from "@codemirror/view"
-import { EditorState, StateField } from "@codemirror/state"
+import { EditorState } from "@codemirror/state"
 import {history, historyKeymap} from "@codemirror/history"
 import {foldGutter, foldKeymap} from "@codemirror/fold"
 import {indentOnInput } from "@codemirror/language"
@@ -19,7 +19,7 @@ import './Editor.css';
 import { autoSave } from "./extensions/autoSave";
 import { hyperclick } from "./extensions/hyperclick";
 
-const myHighlightStyle = HighlightStyle.define([
+const mdHighlightStyle = HighlightStyle.define([
   {tag: tags.heading1, fontWeight: "bold", fontSize: "20px"},
   {tag: tags.heading2, fontWeight: "bold", fontSize: "18px"},
   {tag: tags.heading3, fontWeight: "bold", fontSize: "16px"},
@@ -40,48 +40,47 @@ function Editor({content, onSave, openFile}) {
   const viewHost = useRef();
   const view = useRef(null);
 
-  
-  const basicSetup = [
-    lineNumbers(),
-    highlightActiveLineGutter(),
-    highlightSpecialChars(),
-    history(),
-    foldGutter(),
-    drawSelection(),
-    dropCursor(),
-    EditorState.allowMultipleSelections.of(true),
-    indentOnInput(),
-    myHighlightStyle,
-    defaultHighlightStyle.fallback,
-    bracketMatching(),
-    closeBrackets(),
-    autocompletion(),
-    rectangularSelection(),
-    crosshairCursor(),
-    highlightActiveLine(),
-    highlightSelectionMatches(),
-    keymap.of([
-      ...closeBracketsKeymap,
-      ...defaultKeymap,
-      ...searchKeymap,
-      ...historyKeymap,
-      ...foldKeymap,
-      ...commentKeymap,
-      ...completionKeymap,
-      ...lintKeymap,
-      {key: "Tab", run: insertTab}
-    ]),
-    markdown(),
-    EditorState.tabSize.of(4),
-    autoSave({onSave: onSave}),
-    hyperclick({openFile: openFile}),
-  ];
-
   useEffect(() => { // initial render
+    const basicSetup = [
+      lineNumbers(),
+      highlightActiveLineGutter(),
+      highlightSpecialChars(),
+      history(),
+      foldGutter(),
+      drawSelection(),
+      dropCursor(),
+      EditorState.allowMultipleSelections.of(true),
+      indentOnInput(),
+      mdHighlightStyle,
+      defaultHighlightStyle.fallback,
+      bracketMatching(),
+      closeBrackets(),
+      autocompletion(),
+      rectangularSelection(),
+      crosshairCursor(),
+      highlightActiveLine(),
+      highlightSelectionMatches(),
+      keymap.of([
+        ...closeBracketsKeymap,
+        ...defaultKeymap,
+        ...searchKeymap,
+        ...historyKeymap,
+        ...foldKeymap,
+        ...commentKeymap,
+        ...completionKeymap,
+        ...lintKeymap,
+        {key: "Tab", run: insertTab}
+      ]),
+      markdown(),
+      EditorState.tabSize.of(4),
+      autoSave({onSave: onSave}),
+      hyperclick({openFile: openFile}),
+    ];
+
     const state = EditorState.create({doc: content, extensions: basicSetup})
     view.current = new EditorView({state, parent: viewHost.current});
     return () => view.current.destroy();
-  }, [content]);
+  }, [content, onSave, openFile]);
 
   useEffect(() => { // every render
   });

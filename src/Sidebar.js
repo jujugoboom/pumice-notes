@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import './Sidebar.css';
 
 const Sidebar = ({openFile, currDir, setCurrDir, currFiles, setCurrFiles}) => {

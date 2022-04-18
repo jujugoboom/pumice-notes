@@ -16,7 +16,6 @@ async function handleFileOpen() {
 
 async function listDirectory(_event, dirname, create=false) {
   try {
-    console.log(dirname);
     await fs.access(dirname, constants.F_OK);
   } catch {
     if (create) {
@@ -39,10 +38,9 @@ async function listDirectory(_event, dirname, create=false) {
         directory: file.isDirectory(),
       });
     }
-    console.log(res);
     return res;
   } catch {
-    console.log("Error opening dir");
+    console.error("Error opening dir");
     return false;
   } 
 }
@@ -51,7 +49,7 @@ async function readFile(_e, file, create=false) {
   try {
     await fs.access(file, constants.F_OK);
   } catch {
-    console.log("Unable to open file")
+    console.error("Unable to open file")
     if (create) {
       await fs.writeFile(file, '');
     } else {
