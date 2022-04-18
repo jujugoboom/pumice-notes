@@ -8,10 +8,14 @@
 
 .cm-editor { height: 100% }
 .cm-scroller { overflow: auto }
-.cm-editor .cm-link {
+.cm-link {
     text-decoration: underline;
 }
-.cm-editor .cm-url {
+.cm-url {
     color: blue;
     text-decoration: underline;
+}
+
+.cm-url:hover {
+    cursor: pointer;
 }
