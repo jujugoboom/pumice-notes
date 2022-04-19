@@ -1,5 +1,6 @@
 import { hoverTooltip } from "@codemirror/tooltip";
 import { EditorView } from "@codemirror/view";
+import { Prec } from "@codemirror/state";
 
 let openFile;
 
@@ -13,15 +14,20 @@ const handleClick = (view, event) => {
         event.preventDefault();
         const pos = view.posAtCoords({x: event.clientX, y: event.clientY}, false);
         const dom = view.domAtPos(pos);
+        console.log(dom);
         let url = '';
         if (dom.node?.parentElement?.classList?.contains('cm-url')) {
-            url = dom.node.data;
-        }
-        const httpRegex = /^(http|https):\/\//g;
-        if (url.match(httpRegex)) {
-            window.electronAPI.openBrowser(url);
-        } else {
-            openFile && openFile(url, true, true);
+            if (dom.node.parentElement.href) {
+                url = dom.node.parentElement.href;
+            } else {
+                url = dom.node.data;
+            }
+            const httpRegex = /^(http|https):\/\//g;
+            if (url.match(httpRegex)) {
+                window.electronAPI.openBrowser(url);
+            } else {
+                openFile && openFile(url, true, true);
+            }
         }
     }
 }
@@ -52,5 +58,5 @@ export function hyperclick(config = {}) {
     openFile = config.openFile;
     const hyperclick = EditorView.mouseSelectionStyle.of(handleClick);
     
-    return [hyperclick, hyperclickTooltip];
+    return [Prec.highest(hyperclick), hyperclickTooltip];
 }

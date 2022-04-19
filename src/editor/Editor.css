@@ -19,3 +19,7 @@
 .cm-editor .cm-url:hover {
     cursor: pointer;
 }
+
+.cm-editor .cm-hidden {
+    display: none;
+}

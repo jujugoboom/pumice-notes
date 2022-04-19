@@ -18,6 +18,7 @@ import { markdown } from "@codemirror/lang-markdown";
 import './Editor.css';
 import { autoSave } from "./extensions/autoSave";
 import { hyperclick } from "./extensions/hyperclick";
+import { markdownRenderer } from "./extensions/markdownRenderer";
 
 const mdHighlightStyle = HighlightStyle.define([
   {tag: tags.heading1, fontWeight: "bold", fontSize: "20px"},
@@ -49,7 +50,7 @@ function Editor({content, onSave, openFile}) {
       foldGutter(),
       drawSelection(),
       dropCursor(),
-      EditorState.allowMultipleSelections.of(true),
+      EditorState.allowMultipleSelections.of(false),
       indentOnInput(),
       mdHighlightStyle,
       defaultHighlightStyle.fallback,
@@ -75,6 +76,7 @@ function Editor({content, onSave, openFile}) {
       EditorState.tabSize.of(4),
       autoSave({onSave: onSave}),
       hyperclick({openFile: openFile}),
+      markdownRenderer(),
     ];
 
     const state = EditorState.create({doc: content, extensions: basicSetup})
