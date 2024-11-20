@@ -6,27 +6,35 @@ import {
   highlightActiveLine,
   dropCursor,
   EditorView,
-} from "@codemirror/view";
-import { EditorState } from "@codemirror/state";
-import { history, historyKeymap } from "@codemirror/history";
-import { foldGutter, foldKeymap } from "@codemirror/fold";
-import { indentOnInput } from "@codemirror/language";
-import { lineNumbers, highlightActiveLineGutter } from "@codemirror/gutter";
-import { defaultKeymap, insertTab } from "@codemirror/commands";
-import { bracketMatching } from "@codemirror/matchbrackets";
-import { closeBrackets, closeBracketsKeymap } from "@codemirror/closebrackets";
-import { searchKeymap, highlightSelectionMatches } from "@codemirror/search";
-import { autocompletion, completionKeymap } from "@codemirror/autocomplete";
-import { commentKeymap } from "@codemirror/comment";
-import {
+  lineNumbers,
+  highlightActiveLineGutter,
   rectangularSelection,
   crosshairCursor,
-} from "@codemirror/rectangular-selection";
+} from "@codemirror/view";
+import { EditorState } from "@codemirror/state";
 import {
+  indentOnInput,
+  foldGutter,
+  foldKeymap,
+  bracketMatching,
   defaultHighlightStyle,
   HighlightStyle,
-  tags,
-} from "@codemirror/highlight";
+  syntaxHighlighting,
+} from "@codemirror/language";
+import {
+  defaultKeymap,
+  insertTab,
+  history,
+  historyKeymap,
+} from "@codemirror/commands";
+import { searchKeymap, highlightSelectionMatches } from "@codemirror/search";
+import {
+  autocompletion,
+  completionKeymap,
+  closeBrackets,
+  closeBracketsKeymap,
+} from "@codemirror/autocomplete";
+import { tags } from "@lezer/highlight";
 import { lintKeymap } from "@codemirror/lint";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import "./Editor.css";
@@ -69,8 +77,8 @@ function Editor({ content, onSave, openFile }) {
       dropCursor(),
       EditorState.allowMultipleSelections.of(false),
       indentOnInput(),
-      mdHighlightStyle,
-      defaultHighlightStyle.fallback,
+      syntaxHighlighting(mdHighlightStyle),
+      syntaxHighlighting(defaultHighlightStyle),
       bracketMatching(),
       closeBrackets(),
       autocompletion(),
@@ -85,7 +93,6 @@ function Editor({ content, onSave, openFile }) {
         ...searchKeymap,
         ...historyKeymap,
         ...foldKeymap,
-        ...commentKeymap,
         ...completionKeymap,
         ...lintKeymap,
         { key: "Tab", run: insertTab },

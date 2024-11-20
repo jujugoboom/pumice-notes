@@ -3,7 +3,7 @@ const path = require("path");
 const { app, BrowserWindow, ipcMain, dialog, shell } = require("electron");
 const fs = require("fs/promises");
 const { constants } = require("fs");
-const isDev = require("electron-is-dev");
+// const isDev = import("electron-is-dev");
 
 async function handleFileOpen() {
   const { canceled, filePaths } = await dialog.showOpenDialog({
@@ -111,12 +111,12 @@ function createWindow() {
   // and load the index.html of the app.
   // win.loadFile("index.html");
   win.loadURL(
-    isDev
+    !app.isPackaged
       ? "http://localhost:3000"
       : `file://${path.join(__dirname, "../build/index.html")}`
   );
   // Open the DevTools.
-  if (isDev) {
+  if (!app.isPackaged) {
     win.webContents.openDevTools({ mode: "detach" });
   }
 }
@@ -131,6 +131,7 @@ app.whenReady().then(() => {
   ipcMain.handle("saveFile", saveFile);
   ipcMain.handle("openBrowser", openBrowser);
   ipcMain.handle("deleteFile", deleteFile);
+  ipcMain.handle("createFolder", createFolder);
   createWindow();
 });
 

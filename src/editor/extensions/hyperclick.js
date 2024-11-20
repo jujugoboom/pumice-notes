@@ -1,5 +1,4 @@
-import { hoverTooltip } from "@codemirror/tooltip";
-import { EditorView } from "@codemirror/view";
+import { EditorView, hoverTooltip } from "@codemirror/view";
 import { Prec } from "@codemirror/state";
 
 let openFile;
