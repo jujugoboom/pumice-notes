@@ -8,4 +8,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
   openFile: () => ipcRenderer.invoke("dialog:openFile"),
   saveFile: (file, content) => ipcRenderer.invoke("saveFile", file, content),
   openBrowser: (url) => ipcRenderer.invoke("openBrowser", url),
+  deleteFile: (file) => ipcRenderer.invoke("deleteFile", file),
+  createFolder: (folder) => ipcRenderer.invoke("createFolder", folder),
 });

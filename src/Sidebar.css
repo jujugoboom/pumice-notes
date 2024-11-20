@@ -1,9 +1,23 @@
 .sidebar {
   margin: 0;
-  padding: 10px 20px;
+  margin: 10px 20px;
   overflow-y: auto;
-  max-height: calc(100vh - 20px);
   min-width: 15vw;
+}
+
+.sidebar-header {
+  padding: 2px;
+  display: flex;
+}
+
+.divider {
+  border-width: 1px;
+  border-color: #d9d9d9;
+  border-style: none none solid none;
+  height: 1px;
+  padding: 0px;
+  margin: 0px;
+  width: 100%;
 }
 
 /* width */
@@ -28,10 +42,21 @@
 
 .sidebar-folder-select {
   margin-bottom: 15px;
+  font-size: 1.5rem;
+  background: none;
+  border: #d9d9d9 solid 1px;
+  border-radius: 5px;
 }
 
 .nav-bar {
   text-align: left;
+  overflow: auto;
+  height: calc(100% - 57px);
+}
+
+.nav-bar div {
+  padding-top: 5px;
+  margin-top: 5px;
 }
 
 .nav-directory-inner {
@@ -49,4 +74,29 @@
   top: 5px;
 
   background-color: #e1e1e1;
+}
+
+.file-context-menu {
+  position: absolute;
+  width: 200px;
+  background-color: #383838;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.file-context-menu > ul {
+  box-sizing: border-box;
+  padding: 5px;
+  margin: 0;
+  list-style: none;
+  text-align: left;
+}
+.file-context-menu > ul li {
+  padding: 5px 5px;
+  color: #f1f1f1
+}
+/* hover */
+.file-context-menu > li:hover {
+  cursor: pointer;
+  background-color: #000000;
 }

@@ -4,8 +4,7 @@ import { Prec } from "@codemirror/state";
 
 let openFile;
 
-const platform =
-  window.navigator?.userAgentData?.platform ?? window.navigator.platform;
+const platform = window.navigator.platform;
 const macosPlatforms = ["Macintosh", "MacIntel", "MacPPC", "Mac68K"];
 
 const isMac = macosPlatforms.indexOf(platform) !== -1;
@@ -13,18 +12,33 @@ const isMac = macosPlatforms.indexOf(platform) !== -1;
 const handleClick = (view, event) => {
   if (event.ctrlKey || event.metaKey) {
     event.preventDefault();
-    const target = event.target;
+    let target = event.target;
     let url = "";
-    if (target.classList?.contains("cm-url")) {
+    if (
+      target.classList?.contains("cm-url") ||
+      target.classList?.contains("cm-link")
+    ) {
+      if (
+        target.classList?.contains("cm-link") &&
+        !target.classList?.contains("cm-url")
+      ) {
+        // Check for adjacent urls before just using link
+        if (target.nextSibling.classList?.contains("cm-url")) {
+          target = target.nextSibling;
+        }
+      }
       if (target.href) {
         url = target.href;
       } else {
         url = target.innerText;
       }
+      url = url.replace("<", "").replace(">", "");
       const httpRegex = /^(http|https):\/\//g;
-      if (url.match(httpRegex)) {
+      const mailtoRegex = /^mailto:/g;
+      if (url.match(httpRegex) || url.match(mailtoRegex)) {
         window.electronAPI.openBrowser(url);
       } else {
+        url = url.endsWith(".md") ? url : `${url}.md`;
         openFile && openFile(url, true, true);
       }
     }
@@ -33,8 +47,10 @@ const handleClick = (view, event) => {
 
 const hyperclickTooltip = hoverTooltip((view, pos, side) => {
   const dom = view.domAtPos(pos);
-  console.log(dom);
-  if (dom.node?.parentElement?.classList?.contains("cm-url")) {
+  if (
+    dom.node?.parentElement?.classList?.contains("cm-url") ||
+    dom.node?.parentElement?.classList?.contains("cm-link")
+  ) {
     let { from, to, text } = view.state.doc.lineAt(pos);
     let start = pos,
       end = pos;

@@ -13,6 +13,7 @@
   overflow: auto;
 }
 .cm-editor .cm-link {
+  color: blue;
   text-decoration: underline;
 }
 .cm-editor .cm-url {

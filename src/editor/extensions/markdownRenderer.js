@@ -2,6 +2,15 @@ import { syntaxTree } from "@codemirror/language";
 import { Decoration, ViewPlugin, WidgetType } from "@codemirror/view";
 
 const hiddenMark = Decoration.mark({ class: "cm-hidden" });
+const strikethruMark = Decoration.mark({ tagName: "del" });
+const checkMark = Decoration.mark({
+  tagName: "input",
+  attributes: { type: "checkbox", checked: true, disabled: true },
+});
+const uncheckMark = Decoration.mark({
+  tagName: "input",
+  attributes: { type: "checkbox", disabled: true },
+});
 
 class UrlWidget extends WidgetType {
   constructor(text, url) {
@@ -38,6 +47,7 @@ function generateDecorations(view) {
         const state = view.state;
         const doc = state.doc;
         const selections = state.selection.ranges;
+        console.log(type, doc.sliceString(from, to));
         for (const selection of selections) {
           if (
             doc.lineAt(selection.from).number <= doc.lineAt(from).number &&
@@ -68,6 +78,16 @@ function generateDecorations(view) {
             lastLink = { from, to };
           } else if (type.name === "LinkMark") {
             decorations.push(hiddenMark.range(from, to));
+          } else if (type.name === "Strikethrough") {
+            decorations.push(strikethruMark.range(from, to));
+          } else if (type.name === "StrikethroughMark") {
+            decorations.push(hiddenMark.range(from, to));
+          } else if (type.name === "TaskMarker") {
+            decorations.push(
+              doc.sliceString(from, to).toLowerCase().includes("x")
+                ? checkMark.range(from, to)
+                : uncheckMark.range(from, to)
+            );
           }
         }
       },

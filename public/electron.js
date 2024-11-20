@@ -68,12 +68,27 @@ async function readFile(_e, file, create = false) {
 async function saveFile(_e, file, content) {
   try {
     await fs.access(file, constants.W_OK);
+    await fs.writeFile(file, content);
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+  console.log("Saved");
+}
+
+async function deleteFile(_e, file) {
+  try {
+    await fs.rm(file);
   } catch {
     return false;
   }
+}
+
+async function createFolder(e, folder) {
   try {
-    await fs.writeFile(file, content);
-  } catch {
+    await fs.mkdir(folder);
+  } catch (e) {
+    console.error(e);
     return false;
   }
 }
@@ -115,6 +130,7 @@ app.whenReady().then(() => {
   ipcMain.handle("readFile", readFile);
   ipcMain.handle("saveFile", saveFile);
   ipcMain.handle("openBrowser", openBrowser);
+  ipcMain.handle("deleteFile", deleteFile);
   createWindow();
 });
 

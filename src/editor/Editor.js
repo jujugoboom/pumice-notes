@@ -28,7 +28,7 @@ import {
   tags,
 } from "@codemirror/highlight";
 import { lintKeymap } from "@codemirror/lint";
-import { markdown } from "@codemirror/lang-markdown";
+import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import "./Editor.css";
 import { autoSave } from "./extensions/autoSave";
 import { hyperclick } from "./extensions/hyperclick";
@@ -78,6 +78,7 @@ function Editor({ content, onSave, openFile }) {
       crosshairCursor(),
       highlightActiveLine(),
       highlightSelectionMatches(),
+      EditorView.lineWrapping,
       keymap.of([
         ...closeBracketsKeymap,
         ...defaultKeymap,
@@ -88,8 +89,13 @@ function Editor({ content, onSave, openFile }) {
         ...completionKeymap,
         ...lintKeymap,
         { key: "Tab", run: insertTab },
+        {
+          key: "Ctrl-s",
+          mac: "Cmd-s",
+          run: onSave,
+        },
       ]),
-      markdown(),
+      markdown({ base: markdownLanguage }),
       EditorState.tabSize.of(4),
       autoSave({ onSave: onSave }),
       hyperclick({ openFile: openFile }),
