@@ -43,11 +43,12 @@ function generateDecorations(view) {
     syntaxTree(view.state).iterate({
       from,
       to,
-      enter: (type, from, to) => {
+      enter: (node) => {
         const state = view.state;
         const doc = state.doc;
         const selections = state.selection.ranges;
-        console.log(type, doc.sliceString(from, to));
+        const from = node.from;
+        const to = node.to;
         for (const selection of selections) {
           if (
             doc.lineAt(selection.from).number <= doc.lineAt(from).number &&
@@ -55,10 +56,10 @@ function generateDecorations(view) {
           ) {
             return;
           }
-          if (type.name === "HeaderMark") {
+          if (node.name === "HeaderMark") {
             // Need to also hide the space after the #
             decorations.push(hiddenMark.range(from, to + 1));
-          } else if (type.name === "URL") {
+          } else if (node.name === "URL") {
             if (lastLink?.from <= from && lastLink?.to >= to) {
               const href = doc.sliceString(from, to);
               const regex = /[[(\])]/gi;
@@ -74,15 +75,15 @@ function generateDecorations(view) {
               );
               decorations.push(hiddenMark.range(from, to));
             }
-          } else if (type.name === "Link") {
+          } else if (node.name === "Link") {
             lastLink = { from, to };
-          } else if (type.name === "LinkMark") {
+          } else if (node.name === "LinkMark") {
             decorations.push(hiddenMark.range(from, to));
-          } else if (type.name === "Strikethrough") {
+          } else if (node.name === "Strikethrough") {
             decorations.push(strikethruMark.range(from, to));
-          } else if (type.name === "StrikethroughMark") {
+          } else if (node.name === "StrikethroughMark") {
             decorations.push(hiddenMark.range(from, to));
-          } else if (type.name === "TaskMarker") {
+          } else if (node.name === "TaskMarker") {
             decorations.push(
               doc.sliceString(from, to).toLowerCase().includes("x")
                 ? checkMark.range(from, to)
