@@ -39,7 +39,6 @@ class UrlWidget extends WidgetType {
 function generateDecorations(view) {
   let decorations = [];
   for (let { from, to } of view.visibleRanges) {
-    let lastLink = {};
     syntaxTree(view.state).iterate({
       from,
       to,
@@ -51,38 +50,35 @@ function generateDecorations(view) {
         const to = node.to;
         for (const selection of selections) {
           if (
-            doc.lineAt(selection.from).number <= doc.lineAt(from).number &&
-            doc.lineAt(selection.to).number >= doc.lineAt(to).number
+            (selection.from <= from && selection.to >= to) ||
+            (from <= selection.from && to >= selection.to)
           ) {
             return;
           }
-          if (node.name === "HeaderMark") {
+          if (node.name.startsWith("ATXHeading")) {
             // Need to also hide the space after the #
-            decorations.push(hiddenMark.range(from, to + 1));
+            const headingCount = parseInt(/ATXHeading(\d)/.exec(node.name)[1]);
+            if (!Number.isInteger(headingCount)) continue;
+            decorations.push(hiddenMark.range(from, from + headingCount + 1));
           } else if (node.name === "URL") {
-            if (lastLink?.from <= from && lastLink?.to >= to) {
-              const href = doc.sliceString(from, to);
-              const regex = /[[(\])]/gi;
-              const text = doc
-                .sliceString(lastLink.from, from)
-                .replaceAll(regex, "");
-              // TODO: Fix hyperclicking on styled links
-              decorations.push(
-                Decoration.replace({ widget: new UrlWidget(text, href) }).range(
-                  lastLink.from,
-                  lastLink.to
-                )
-              );
-              decorations.push(hiddenMark.range(from, to));
-            }
           } else if (node.name === "Link") {
-            lastLink = { from, to };
-          } else if (node.name === "LinkMark") {
-            decorations.push(hiddenMark.range(from, to));
+            const linkText = doc.sliceString(from, to);
+            let url;
+            const text = /\[(.*)\]/g.exec(linkText)[1];
+            if (/\(.*\)/.test(linkText)) {
+              url = /\((.*)\)/g.exec(linkText)[1];
+            } else {
+              url = text;
+            }
+            decorations.push(
+              Decoration.replace({ widget: new UrlWidget(text, url) }).range(
+                from,
+                to
+              )
+            );
           } else if (node.name === "Strikethrough") {
-            decorations.push(strikethruMark.range(from, to));
-          } else if (node.name === "StrikethroughMark") {
-            decorations.push(hiddenMark.range(from, to));
+            decorations.push(hiddenMark.range(from, from + 2));
+            decorations.push(hiddenMark.range(to - 2, to));
           } else if (node.name === "TaskMarker") {
             decorations.push(
               doc.sliceString(from, to).toLowerCase().includes("x")
